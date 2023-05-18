@@ -3,6 +3,12 @@
 
 Use the standard Go http file server to serve a directory.
 
+## Install
+
+```
+go install github.com/rhomel/http-serve-directory
+```
+
 ## Usage
 
 The default configuration will serve the current directory:

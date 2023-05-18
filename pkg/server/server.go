@@ -21,9 +21,21 @@ type server struct {
 	dirFS         fs.FS
 }
 
+var usageHeader string = `
+Serve a directory using Go's standard http file server.
+
+It defaults to the current directory. Use -directory to specify a custom path.
+
+Options:
+`
+
 func (s *server) parseFlags() {
 	flag.StringVar(&s.dirPath, "directory", ".", "directory path to serve")
 	flag.StringVar(&s.listenAddress, "address", "0.0.0.0:3000", "address:port to listen on")
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), usageHeader)
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 }
 
