@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"flag"
@@ -9,10 +9,6 @@ import (
 	"os"
 	"path/filepath"
 )
-
-func main() {
-	Serve()
-}
 
 func Serve() {
 	(&server{}).Serve()
