@@ -19,6 +19,7 @@ type server struct {
 	dirPath       string
 	absDirPath    string
 	dirFS         fs.FS
+	logAccesses   bool
 }
 
 var usageHeader string = `
@@ -32,6 +33,7 @@ Options:
 func (s *server) parseFlags() {
 	flag.StringVar(&s.dirPath, "directory", ".", "directory path to serve")
 	flag.StringVar(&s.listenAddress, "address", "0.0.0.0:3000", "address:port to listen on")
+	flag.BoolVar(&s.logAccesses, "log", false, "log http requests")
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), usageHeader)
 		flag.PrintDefaults()
@@ -48,6 +50,14 @@ func (s *server) getAbsPath() error {
 	return nil
 }
 
+func (s *server) getHandler() http.Handler {
+	handler := http.FileServer(http.FS(s.dirFS))
+	if s.logAccesses {
+		handler = NewLoggingHandler(handler)
+	}
+	return handler
+}
+
 func (s *server) configure() error {
 	s.parseFlags()
 	if err := s.getAbsPath(); err != nil {
@@ -62,7 +72,7 @@ func (s *server) Serve() {
 		log.Fatal("failed to initialize:", err)
 	}
 	s.logConfig()
-	handler := http.FileServer(http.FS(s.dirFS))
+	handler := s.getHandler()
 	http.ListenAndServe(s.listenAddress, handler)
 }
 

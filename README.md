@@ -27,3 +27,5 @@ http-serve-directory -directory=/my/path -address=127.0.0.1:9999
 # 2023/05/17 23:54:05 listening address: http://127.0.0.1:9999
 ```
 
+Use `http-serve-directory -h` to see more options.
+
